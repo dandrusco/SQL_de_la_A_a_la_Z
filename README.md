@@ -17,3 +17,8 @@ Bajar hasta "Versión de Microsoft Visual C++ Redistributable más reciente" y d
 Para que *MySql Workbench* funcione, necesitamos una instancia a MySQL Server, para ello deberemos entrear en la siguiente URL https://dev.mysql.com/downloads/mysql/ y descargaremos Windows (x86, 64-bit), MSI Installer 
 
 Para una correcta instalacion: https://www.youtube.com/watch?v=a3HJnbYhXUc (Video en ingles) 
+
+## Soluciona "mysql workbench could not acquire management access for administration"
+
+La solucion esta en en Youtube: https://www.youtube.com/watch?v=gwNdzZ_Enok
+
