@@ -1,6 +1,4 @@
-# SQL de la A a la Z
-
-### Curso impartido por Frogames
+# SQL de la A a la Z - Curso impartido por Frogames
 
 ## MySql Workbench
 
