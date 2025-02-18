@@ -2,4 +2,4 @@
 
 ### Curso impartido por Frogames
 
-Para este curso utilizaremos *mysql workbench*, lo podemos descargar desde la URL oficial: https://www.mysql.com/products/workbench/ respaldado por *Oracle*
+Para este curso utilizaremos *mysql workbench*, lo podemos descargar desde la URL oficial: https://www.mysql.com/products/workbench/ respaldado por *Oracle* y compatible para Windows, Mac y Linux
