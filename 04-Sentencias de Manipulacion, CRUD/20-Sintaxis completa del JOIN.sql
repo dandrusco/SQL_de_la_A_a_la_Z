@@ -1,6 +1,6 @@
 /*
-SQL Completo
-============
+SQL Completo version JOIN
+=========================
 
 SELECT nombre_columnas_a_seleccionar
  FROM tabla1 [[AS] t1] JOIN tabla2 [[AS] t2]
@@ -14,146 +14,41 @@ SELECT p.id, p.nombre, p.precio, p.id_cliente, c.id, c.nif, c.nombre
  WHERE c.id = p.id_cliente
  AND c.id = 20;
 
-/* Podemos observar que id_cliente y id tienen el mismo valor 20*/
- 
+/* 
+Podemos observar que id_cliente y id tienen el mismo valor 20
+Comensaremos a realizar los siguientes cambios. 
+1. En vez de poner FROM clientes c, proyectos p, reemplazaremos la "coma" por JOIN
+2. En la condicion del  WHERE, lo debemos reemplazar por el ON
+3. Y la condicion del filtrado AND c.id = 20, reemplazamos el AND por el WHERE
+*/
 SELECT p.id, p.nombre, p.precio, p.id_cliente, c.id, c.nif, c.nombre 
  FROM clientes c JOIN proyectos p
  ON c.id = p.id_cliente
  WHERE c.id = 20;
- 
+
+/* 
+En el caso del ON, no solo debe ser de caracter de comparacion, tambien podemos poner un mayor que, menor que, etc
+Vamos con otro ejemplo:
+Pediremos los apellidos de los empleados que ganan mas que el empleado numero 5
+Para ello, primero filtraremos al empleado 5 para ver cuanto gana el.
+*/
+SELECT * FROM empleados WHERE id=5;
+
+/*
+Ahora toca juntar la tabla empleados contra Ricardo Alberich, que a su vez es una fila de la tabla empleados
+En otras palablas deberemos juntar la tabla empleados con sigo misma
+
+1.- Lo primero sera recuperar los datos del id, nombre, apellido y sueldo de la tabla empleados, como llamaremos dos veces a 
+esta tabla empleados, la renombraremos a e1:
+	SELECT e1.id, e1.nombre, e1.apellido, e1.sueldo
+	FROM empleados e1
+2. Ahora agregaremos el JOIN para juntar nuevamente con la tabla empleados pero la llamaremos e2
+	SELECT e1.id, e1.nombre, e1.apellido, e1.sueldo
+	FROM empleados e1 JOIN empleados e2
+3. Como necesitamos sacar a los empleados de la primera tabla que ganen mas que el empleado de la segunda tabla con el ID 5, 
+por lo tanto meteremos un ON comparando que el sueldo de los empleados 1 sea > el sueldo de los empleados 2
+4. Solo falta definir con quien me quedare de la tabla empleados 2? Con el numero 5 WHERE e2.id = 5;
+*/
 SELECT e1.id, e1.nombre, e1.apellido, e1.sueldo
  FROM empleados e1 JOIN empleados e2 ON e1.sueldo > e2.sueldo
  WHERE e2.id = 5;
- 
- /*
- Combinación Natural
- -------------------
- SELECT nombre_columnas_a_seleccionar
-  FROM tabla1 NATURAL JOIN tabla
-  [WHERE condiciones];
- */
- 
- SELECT * FROM empleados NATURAL JOIN departamentos 
-  WHERE email = "dirb@frogames.es";
-  
-SELECT e.id, e.nombre, e.apellido FROM empleados e JOIN departamentos d
- USING (nombre_departamento, ciudad_departamento)
- WHERE email = "dirb@frogames.es";
- 
-
-/*
-Combinaciones Internas
-----------------------
-SELECT nombre_columnas_a_seleccionar
- FROM t1 [NATURAL] [INNER] JOIN t2
- {ON condiciones | USING (columna1 [, columna2...])}
- [WHERE condiciones];
-
-
-Combinaciones Externas
-----------------------
-SELECT nombre_columnas_a_seleccionar
- FROM t1 [NATURAL] [LEFT|RIGHT|FULL] [OUTER] JOIN t2
- {ON condiciones | USING (columa1 [, columna2...]}
- [WHERE condiciones];
-
-*/
-
-SELECT * FROM empleados e NATURAL JOIN departamentos d;
-
-SELECT * FROM empleados e INNER JOIN departamentos d USING (nombre_departamento, ciudad_departamento);
-
-SELECT * FROM empleados e NATURAL LEFT OUTER JOIN departamentos d;
-
-SELECT * FROM empleados e NATURAL RIGHT OUTER JOIN departamentos d;
-
-/*SELECT * FROM empleados e NATURAL FULL OUTER JOIN departamentos d;*/
-
-SELECT * 
- FROM empleados e, proyectos p, clientes c
- WHERE e.id_proyecto = p.id AND p.id_cliente = c.id;
- 
-SELECT * 
- FROM (empleados e JOIN proyectos p ON e.id_proyecto = p.id)
- JOIN clientes c ON p.id_cliente = c.id;
- 
- 
-/*
-Unión
-=====
-SELECT columnas FROM tabla [WHERE condiciones]
-UNION [ALL]
-SELECT columnas FROM tabla [WHERE condiciones];
-*/
-
-SELECT ciudad FROM clientes
-UNION
-SELECT ciudad_departamento FROM departamentos;
-
-
-SELECT e.id, e.nombre, e.apellido, d.nombre_departamento, d.ciudad_departamento, d.email 
- FROM empleados e NATURAL LEFT OUTER JOIN departamentos d
-UNION
-SELECT e.id, e.nombre, e.apellido, d.nombre_departamento, d.ciudad_departamento, d.email 
- FROM empleados e NATURAL RIGHT OUTER JOIN departamentos d;
- 
-/*
-Intersección
-============
-
-SELECT columnas FROM tabla [WHERE condiciones]
-INTERSECT [ALL]
-SELECT columnas FROM tabla [WHERE condiciones]
-*/
-
-(SELECT ciudad FROM clientes)
-INTERSECT
-(SELECT ciudad_departamento FROM departamentos);
-
-/*
-Equivalencias con IN y EXISTS
------------------------------
-
-SELECT columnas FROM tabla1
-WHERE columna IN (SELECT columna FROM tabla2 [WHERE condiciones]);
-
-SELECT columnas FROM tabla1
-WHERE EXISTS (SELECT * FROM tabla2 [WHERE condiciones]);
-*/
-
-SELECT c.ciudad FROM clientes c
-WHERE c.ciudad IN (SELECT d.ciudad_departamento FROM departamentos d);
-
-SELECT c.ciudad FROM clientes c
-WHERE EXISTS (SELECT 1 FROM departamentos d WHERE c.ciudad = d.ciudad_departamento);
-
-/*
-Diferencia
-==========
-
-SELECT columnas FROM tabla1 [WHERE condiciones]
-EXCEPT [ALL]
-SELECT columnas FROM tabla2 [WHERE condiciones];
-
-*/
-
-(SELECT c.id FROM clientes c)
-EXCEPT
-(SELECT p.id_cliente FROM proyectos p);
-
-/*
-Equivalencias con NOT IN y NOT EXISTS
--------------------------------------
-
-SELECT columnas FROM tabla1 
-WHERE columna NOT IN (SELECT columna FROM tabla2 [WHERE condiciones]);
-
-SELECT columnas FROM tabla1
-WHERE columna NOT EXISTS (SELECT * FROM tabla2 [WHERE condiciones]);
-*/
-
-SELECT c.id FROM clientes c 
-WHERE c.id NOT IN (SELECT p.id_cliente FROM proyectos p);
-
-SELECT c.id FROM clientes c
-WHERE NOT EXISTS (SELECT 1 FROM proyectos p WHERE c.id = p.id_cliente);
